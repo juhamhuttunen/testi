@@ -98,8 +98,12 @@ app.post('/api/products', (req, res) => {
   try {
     const { name, description, category, price, quantity, sku } = req.body;
     
-    if (!name || price === undefined || quantity === undefined) {
+    if (!name || price == null || quantity == null) {
       return res.status(400).json({ error: 'Name, price, and quantity are required' });
+    }
+    
+    if (price < 0 || quantity < 0) {
+      return res.status(400).json({ error: 'Price and quantity must be non-negative' });
     }
 
     const stmt = db.prepare(`
@@ -120,6 +124,14 @@ app.post('/api/products', (req, res) => {
 app.put('/api/products/:id', (req, res) => {
   try {
     const { name, description, category, price, quantity, sku } = req.body;
+    
+    if (!name || price == null || quantity == null) {
+      return res.status(400).json({ error: 'Name, price, and quantity are required' });
+    }
+    
+    if (price < 0 || quantity < 0) {
+      return res.status(400).json({ error: 'Price and quantity must be non-negative' });
+    }
     
     const stmt = db.prepare(`
       UPDATE products 
